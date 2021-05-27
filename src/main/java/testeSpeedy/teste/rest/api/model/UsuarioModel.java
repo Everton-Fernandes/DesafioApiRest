@@ -46,11 +46,16 @@ public class UsuarioModel {
 	private Double valor;
 	
 	@Column
-	private Double valbase;
+	private Double calculo;
 	
 	@Column
 	private Integer idade;
+	
+	@Column
+	private Integer qtdparcelas;
 
+	@Column
+	private Double parcela;
 
 
 	public UsuarioModel() {
@@ -64,8 +69,10 @@ public class UsuarioModel {
 			Calendar nascimento,
 			String veiculo,
 			Double valor,
-			Double valbase,
-			Integer idade){
+			Double calculo,
+			Integer idade,
+			Integer qtdparcelas,
+			Double parcela){
 		id = id;
 		nome = nome;
 		cpf = cpf;
@@ -73,8 +80,11 @@ public class UsuarioModel {
 		nascimento = nascimento;
 		veiculo = veiculo;
 		valor = valor;
-		valbase = valbase;
+		calculo = calculo;
+		qtdparcelas = qtdparcelas;
 		idade = idade;
+		
+		parcela = parcela;
 	}
 
 	public Integer getId() {
@@ -133,29 +143,115 @@ public class UsuarioModel {
 		this.valor = valor;
 	}
 		
-	public Double getValbase() {
-		return valbase;
+
+	public Double getCalculo() {
+		
+		if(sexo=="F") {
+			if(idade>=18 && idade<26) {
+				calculo = (valor * 0.03) * 1.10;
+			} else if (idade>25 && idade<31) {
+				calculo = (valor * 0.03) * 1.05;
+				
+			} else if (idade>30 && idade<36) {
+				calculo = (valor * 0.03) * 1.02;
+				
+			} else if (idade>35) {
+				calculo = (valor * 0.03) * 1.00;
+				
+			}
+
+		} else { // para genero masculino  acrescer 10% do valor base
+			if(idade>=18 && idade<26) {
+				calculo = ((valor * 0.03) * 1.10) + ((valor * 0.03) * 1.10);
+			} else if (idade>25 && idade<31) {
+				calculo = ((valor * 0.03) * 1.05) + ((valor * 0.03) * 1.10);
+				
+			} else if (idade>30 && idade<36) {
+				calculo = ((valor * 0.03) * 1.02) + ((valor * 0.03) * 1.10);
+				
+			} else if (idade>35) {
+				calculo = ((valor * 0.03) * 1.00) + ((valor * 0.03) * 1.10);
+				
+			}
+
+		}
+
+		return calculo;
 	}
 
-	public void setValbase(Double valbase) {
-		valbase = valor * 0.03;
-		this.valbase = valbase;
+	public void setCalculo(Double calculo) {		
+		this.calculo = calculo;
 	}
 
 	public Integer getIdade() {
+		Calendar hoje = Calendar.getInstance();
+		int age = hoje.get(Calendar.YEAR) - nascimento.get(Calendar.YEAR);
+		idade = age;
 
 		return idade;
 	}
 
 	public void setIdade(Integer idade) {
-		Calendar hoje = Calendar.getInstance();
-		int age = hoje.get(Calendar.YEAR) - nascimento.get(Calendar.YEAR);
-		idade = age;
 		this.idade = idade;
 	}
+	
+	
 
-	public void calculo (Double valBase) {
-		valBase = this.valor * 0.03;
+	public Integer getQtdparcelas() {
+		return qtdparcelas;
+	}
+
+	public void setQtdparcelas(Integer qtdparcelas) {
+		this.qtdparcelas = qtdparcelas;
+	}
+
+	public Double getParcela() {
+		switch(qtdparcelas) {
+		case 1: 
+			parcela = calculo; 
+			break;
+		case 2: 
+			parcela = calculo/2; 
+			break;
+		case 3: 
+			parcela = calculo/3; 
+			break;
+		case 4: 
+			parcela = calculo/4; 
+			break;
+		case 5: 
+			parcela = calculo/5; 
+			break;
+		case 6: 
+			parcela = (calculo * 1.03)/6; 
+			break;
+		case 7: 
+			parcela = (calculo * 1.03)/7; 
+			break;
+		case 8: 
+			parcela = (calculo * 1.03)/8; 
+			break;
+		case 9: 
+			parcela = (calculo * 1.03)/9; 
+			break;
+		case 10: 
+			parcela = (calculo * 1.05)/10; 
+			break;
+		case 11: 
+			parcela = (calculo * 1.05)/11; 
+			break;
+		case 12: 
+			parcela = (calculo * 1.05)/12; 
+			break;
+		default: 
+			parcela = null;
+		}
+		
+		return parcela;
+	}
+
+	public void setParcela(Double parcela) {
+		this.parcela = parcela;
 	}
 
 }
